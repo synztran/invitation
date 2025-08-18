@@ -1,0 +1,12 @@
+export const WRAPPER_IMAGE = "/images/wrapper.webp";
+export const HEART_ICON = "/images/new_heart.png";
+export const COMPASS_IMAGE = "/images/new_compass.webp";
+export const PASTEL_BG = "/images/pastel_bg.jpeg";
+export const AIRPLANE_IMAGE = "/images/airplan.png";
+export const ARROW_RIGHT = "/images/arrow_right.png";
+export const BOARDING_PASS = "/images/boarding_pass.png";
+export const BOARDING_BG = "/images/boarding_bg.webp";
+export const BARCODE_IMAGE = "/images/barcode.webp";
+export const BOARDING_CLASS_BG = "/images/new_1_class_bg.webp";
+export const SIMPLE_AIRPLAN = "/images/simple_airplan.png";
+export const LOCATION_IMAGE = "/images/location.png";
