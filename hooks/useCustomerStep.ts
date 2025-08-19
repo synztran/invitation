@@ -10,6 +10,9 @@ export interface CustomerStepData {
 	login?: {
 		isAuthenticated: boolean;
 		secretKey?: string;
+		invitorInfo: {
+			name: string;
+		};
 	};
 	wrapper?: {
 		viewedInvitation: boolean;
@@ -72,6 +75,9 @@ const STEPS: CustomerStep[] = [
 const INITIAL_STEP_DATA: CustomerStepData = {
 	login: {
 		isAuthenticated: false,
+		invitorInfo: {
+			name: "",
+		},
 	},
 	wrapper: {
 		viewedInvitation: false,

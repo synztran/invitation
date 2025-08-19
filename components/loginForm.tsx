@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import useCustomerStep from "hooks/useCustomerStep";
+import { invitorMap } from "pages";
 
 const formVariants = {
 	initial: {
@@ -71,7 +72,7 @@ const errorVariants = {
 export default function LoginForm({
 	onAuthenticated,
 }: {
-	onAuthenticated: () => void;
+	onAuthenticated: (secret: string) => void;
 }) {
 	const [secret, setSecret] = useState("");
 	const [error, setError] = useState("");
@@ -82,8 +83,13 @@ export default function LoginForm({
 			setError("Secret key is required.");
 			return;
 		}
+		if (secret && !invitorMap[secret as keyof typeof invitorMap]) {
+			setError("Invalid secret key.");
+			return;
+		}
+
 		setError("");
-		onAuthenticated();
+		onAuthenticated(secret);
 	};
 
 	return (
@@ -129,11 +135,11 @@ export default function LoginForm({
 						initial="initial"
 						animate="animate">
 						<motion.input
-							type="password"
+							type="text"
 							placeholder="Fill your invitation key"
 							className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--main-color)]"
 							value={secret}
-							onChange={(e) => setSecret(e.target.value)}
+							onChange={(e: any) => setSecret(e.target.value)}
 							autoComplete="off"
 							autoCorrect="off"
 							initial={{ opacity: 0, x: 40 }}
@@ -171,7 +177,7 @@ export default function LoginForm({
 							initial="initial"
 							animate="animate"
 							variants={shineVariants}>
-							<span className="block w-16 h-full bg-gradient-to-r from-transparent via-white/80 to-transparent blur-md opacity-80" />
+							<div className="block w-16 h-full bg-gradient-to-r from-transparent via-white/80 to-transparent blur-md opacity-80" />
 						</motion.span>
 						<span className="relative z-10">
 							Get your boarding pass

@@ -4,6 +4,7 @@ import {
 	SIMPLE_AIRPLAN,
 } from "components/images";
 import { motion } from "framer-motion";
+import useCustomerStep from "hooks/useCustomerStep";
 import Image from "next/image";
 
 const TITLE = "Hai & Giang";
@@ -13,6 +14,7 @@ interface IProps {
 }
 
 const BoardingPass = ({ customerName = "Trần Anh Quân" }: IProps) => {
+	const { stepData } = useCustomerStep();
 	return (
 		<motion.div
 			className={`h-full w-full flex bg-[url("/images/boarding_bg.webp")] overflow-auto`}
@@ -25,7 +27,7 @@ const BoardingPass = ({ customerName = "Trần Anh Quân" }: IProps) => {
 					backgroundPositionX: "65%",
 				}}
 			/>
-			<div className={`w-full relative py-2 grid grid-rows-12 h-full`}>
+			<div className={`w-full relativ pt-2 grid grid-rows-12 h-full`}>
 				<div className="relative pl-10 pr-12 pb-4 row-span-1">
 					<motion.span
 						className="text-left text-black text-6xl font-bold signature-font"
@@ -260,7 +262,7 @@ const BoardingPass = ({ customerName = "Trần Anh Quân" }: IProps) => {
 							ease: "easeOut",
 						}}>
 						<div className="flex gap-2 text-xs items-baseline">
-							<div className="w-full h-1/2">
+							<div className="w-full h-1/2 text-right">
 								<strong>Welcome:</strong>
 							</div>
 							<strong className="w-full h-1/2">10:00 am</strong>

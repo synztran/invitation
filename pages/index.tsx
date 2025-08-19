@@ -12,18 +12,31 @@ type InvitationProps = {
 	venue: string;
 };
 
+export const invitorMap = {
+	"111025nga": {
+		name: "Ut Nga",
+	},
+	"111025mai": {
+		name: "Má Mai",
+	},
+	"111025quanghuy": {
+		name: "homie Quang Huy",
+	},
+};
+
 export default function Home() {
 	const { currentStep, stepData, nextStep, updateStepData, getStepProgress } =
 		useCustomerStep();
-	console.log("currentStep", currentStep, "stepData", stepData);
 
-	const handleAuthentication = () => {
+	const handleAuthentication = (secret: string) => {
 		updateStepData("login", {
 			isAuthenticated: true,
+			invitorInfo: invitorMap[secret as keyof typeof invitorMap],
 		});
 		nextStep({
 			login: {
 				isAuthenticated: true,
+				invitorInfo: invitorMap[secret as keyof typeof invitorMap],
 			},
 		}); // Move to wrapper step
 	};
@@ -54,9 +67,7 @@ export default function Home() {
 			case "boarding-pass":
 				return (
 					<BoardingPass
-						customerName={
-							stepData.customerReply?.name || "Trần Anh Quân"
-						}
+						customerName={stepData.login?.invitorInfo.name || ""}
 					/>
 				);
 

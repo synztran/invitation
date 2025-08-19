@@ -19,6 +19,9 @@ export default function Home() {
 		nextStep({
 			login: {
 				isAuthenticated: true,
+				invitorInfo: {
+					name: "Trần Anh Quân",
+				},
 			},
 		}); // Move to wrapper step
 	};
