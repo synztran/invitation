@@ -11,10 +11,15 @@ const TITLE = "Hai & Giang";
 
 interface IProps {
 	customerName: string;
+	onTear: () => void;
+	isSubmittedForm: boolean;
 }
 
-const BoardingPass = ({ customerName = "Trần Anh Quân" }: IProps) => {
-	const { stepData } = useCustomerStep();
+const BoardingPass = ({
+	customerName = "Trần Anh Quân",
+	onTear,
+	isSubmittedForm,
+}: IProps) => {
 	return (
 		<motion.div
 			className={`h-full w-full flex bg-[url("/images/boarding_bg.webp")] overflow-auto`}
@@ -195,17 +200,6 @@ const BoardingPass = ({ customerName = "Trần Anh Quân" }: IProps) => {
 								/>
 							</motion.div>
 						</div>
-						{/* <motion.div
-							className="border-b border-black w-[5.95rem] h-[1px] rotate-45 absolute -bottom-[2.1rem] -left-[0.9rem]"
-							initial={{ scaleX: 0 }}
-							animate={{ scaleX: 1 }}
-							transition={{
-								delay: 1.8,
-								duration: 0.5,
-								ease: "easeOut",
-							}}
-							style={{ originX: 0 }}
-						/> */}
 					</motion.div>
 					<motion.div
 						className="relative my-auto h-full flex items-center justify-center"
@@ -252,7 +246,7 @@ const BoardingPass = ({ customerName = "Trần Anh Quân" }: IProps) => {
 						Your presence brings joy and happiness to our family.
 					</motion.div>
 					<motion.div
-						className="grid grid-rows-2 ml-6 text-center py-4"
+						className="grid grid-rows-2 text-center py-4"
 						style={{ writingMode: "vertical-rl" }}
 						initial={{ opacity: 0, x: 30 }}
 						animate={{ opacity: 1, x: 0 }}
@@ -274,6 +268,175 @@ const BoardingPass = ({ customerName = "Trần Anh Quân" }: IProps) => {
 							<strong className="w-full h-1/2">11:00 am</strong>
 						</div>
 					</motion.div>
+					{!isSubmittedForm ? (
+						<motion.button
+							onClick={async (e) => {
+								const btn = e.currentTarget;
+								const fingerprint =
+									btn.querySelector(".fingerprint");
+								const scanBar = btn.querySelector(".scan-bar");
+								if (fingerprint && scanBar) {
+									fingerprint.classList.add("scanning");
+									scanBar.classList.add("scanning");
+									// Animate scan bar
+									scanBar.animate(
+										[
+											{
+												transform: "translateY(0%)",
+												opacity: 1,
+											},
+											{
+												transform: "translateY(100%)",
+												opacity: 0.7,
+											},
+										],
+										{
+											duration: 700,
+											easing: "cubic-bezier(.7,-0.2,.7,1.5)",
+											fill: "forwards",
+										}
+									);
+									// Animate fingerprint glow
+									fingerprint.animate(
+										[
+											{
+												filter: "drop-shadow(0 0 0px #00bcd4)",
+												opacity: 1,
+											},
+											{
+												filter: "drop-shadow(0 0 12px #00bcd4)",
+												opacity: 1,
+											},
+											{
+												filter: "drop-shadow(0 0 0px #00bcd4)",
+												opacity: 0.7,
+											},
+											{
+												filter: "drop-shadow(0 0 0px #00bcd4)",
+												opacity: 0,
+											},
+										],
+										{
+											duration: 900,
+											easing: "cubic-bezier(.7,-0.2,.7,1.5)",
+											fill: "forwards",
+										}
+									);
+								}
+								btn.animate(
+									[
+										{
+											filter: "brightness(1)",
+											opacity: 1,
+											transform: "scale(1)",
+										},
+										{
+											filter: "brightness(1.2)",
+											opacity: 1,
+											transform: "scale(1.05)",
+										},
+										{
+											filter: "brightness(1.5)",
+											opacity: 0.7,
+											transform: "scale(0.97)",
+										},
+										{
+											filter: "brightness(2)",
+											opacity: 0,
+											transform: "scale(0.9)",
+										},
+									],
+									{
+										duration: 900,
+										easing: "cubic-bezier(.7,-0.2,.7,1.5)",
+										fill: "forwards",
+									}
+								);
+								await new Promise((res) =>
+									setTimeout(res, 900)
+								);
+								if (typeof onTear === "function") onTear();
+							}}
+							className="mx-auto mt-6 mb-2 ml-8 flex flex-col items-center gap-1 bg-white border border-dashed border-black rounded-full px-2 py-2 shadow hover:bg-gray-100 active:scale-95 transition-all relative overflow-hidden w-full max-w-xs"
+							style={{ width: "100%" }}
+							initial={{ scale: 0, opacity: 0 }}
+							animate={{ scale: 1, opacity: 1 }}
+							transition={{
+								delay: 2.3,
+								type: "spring",
+								stiffness: 300,
+								damping: 20,
+							}}
+							aria-label="Scan your finger to continue">
+							<span className="text-xs font-semibold tracking-widest text-gray-700">
+								Click here
+							</span>
+							<span
+								className="fingerprint flex items-center justify-center absolute top-1/2 -translate-y-1/2"
+								aria-hidden="true"
+								style={{
+									width: 36,
+									height: 36,
+									borderRadius: "50%",
+									background:
+										"radial-gradient(circle at 60% 40%, #e0f7fa 60%, #fff 100%)",
+									boxShadow: "0 0 0px #00bcd4",
+									transition: "box-shadow 0.3s",
+									overflow: "hidden",
+								}}>
+								<span
+									className="flex flex-col items-center justify-center w-full h-full"
+									aria-hidden="true">
+									<span
+										className="block bg-black rounded-full"
+										style={{
+											width: 10,
+											height: 10,
+											marginBottom: 6,
+										}}
+									/>
+									<span
+										className="block bg-black rounded-full"
+										style={{
+											width: 10,
+											height: 10,
+										}}
+									/>
+								</span>
+							</span>
+							<style jsx>{`
+								.fingerprint {
+									transition: box-shadow 0.3s;
+								}
+								.fingerprint.scanning {
+									box-shadow: 0 0 16px 4px #00bcd4;
+								}
+								.scan-bar {
+									transition: opacity 0.2s;
+								}
+								.scan-bar.scanning {
+									animation: scanbar-move 0.7s
+										cubic-bezier(0.7, -0.2, 0.7, 1.5)
+										forwards;
+								}
+								@keyframes scanbar-move {
+									0% {
+										transform: translateX(-50%)
+											translateY(0%);
+										opacity: 1;
+									}
+									80% {
+										opacity: 0.7;
+									}
+									100% {
+										transform: translateX(-50%)
+											translateY(100%);
+										opacity: 0;
+									}
+								}
+							`}</style>
+						</motion.button>
+					) : null}
 				</motion.div>
 			</div>
 			<motion.div

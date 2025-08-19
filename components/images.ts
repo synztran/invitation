@@ -10,3 +10,5 @@ export const BARCODE_IMAGE = "/images/barcode.webp";
 export const BOARDING_CLASS_BG = "/images/new_1_class_bg.webp";
 export const SIMPLE_AIRPLAN = "/images/simple_airplan.png";
 export const LOCATION_IMAGE = "/images/location.png";
+export const GOOGLE_MAPS_ICON = "/images/gg_map.png";
+export const PATTERN_WEDDING = "/images/pattern_wedding.jpg";

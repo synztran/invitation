@@ -12,23 +12,19 @@ export interface CustomerStepData {
 		secretKey?: string;
 		invitorInfo: {
 			name: string;
+			invitation_id: string;
 		};
+		isSubmittedForm: boolean;
 	};
 	wrapper?: {
 		viewedInvitation: boolean;
 		timestamp?: Date;
 	};
 	boardingPass?: {
-		passGenerated: boolean;
-		passData?: any;
+		timestamp?: Date;
 	};
 	customerReply?: {
-		attending: boolean | null;
-		guestCount?: number;
-		dietaryRestrictions?: string;
-		message?: string;
-		submittedAt?: Date;
-		name?: string;
+		timestamp?: Date;
 	};
 }
 
@@ -77,16 +73,18 @@ const INITIAL_STEP_DATA: CustomerStepData = {
 		isAuthenticated: false,
 		invitorInfo: {
 			name: "",
+			invitation_id: "",
 		},
+		isSubmittedForm: false,
 	},
 	wrapper: {
 		viewedInvitation: false,
 	},
 	boardingPass: {
-		passGenerated: false,
+		timestamp: undefined,
 	},
 	customerReply: {
-		attending: null,
+		timestamp: undefined,
 	},
 };
 
@@ -135,9 +133,9 @@ export const useCustomerStep = (
 				case "wrapper":
 					return dataToCheck.wrapper?.viewedInvitation === true;
 				case "boarding-pass":
-					return dataToCheck.boardingPass?.passGenerated === true;
+					return dataToCheck.boardingPass?.timestamp !== undefined;
 				case "customer-reply":
-					return dataToCheck.customerReply?.attending !== null;
+					return dataToCheck.customerReply?.timestamp !== undefined;
 				default:
 					return false;
 			}

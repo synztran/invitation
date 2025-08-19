@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import useCustomerStep from "hooks/useCustomerStep";
-import { invitorMap } from "pages";
+import { getInvitation } from "clients";
 
 const formVariants = {
 	initial: {
@@ -72,24 +71,33 @@ const errorVariants = {
 export default function LoginForm({
 	onAuthenticated,
 }: {
-	onAuthenticated: (secret: string) => void;
+	onAuthenticated: (data: any) => void;
 }) {
 	const [secret, setSecret] = useState("");
 	const [error, setError] = useState("");
+	const [isLoading, setLoading] = useState(false);
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!secret.trim()) {
 			setError("Secret key is required.");
 			return;
 		}
-		if (secret && !invitorMap[secret as keyof typeof invitorMap]) {
-			setError("Invalid secret key.");
-			return;
-		}
 
-		setError("");
-		onAuthenticated(secret);
+		setLoading(true);
+		try {
+			const response = await getInvitation(secret);
+			if (response.status === "OK" && response.data.length > 0) {
+				onAuthenticated(response.data[0]);
+				setError("");
+			} else {
+				setError("Invalid secret key.");
+			}
+		} catch (error) {
+			setError("Invalid secret key.");
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	return (
@@ -167,10 +175,29 @@ export default function LoginForm({
 					</AnimatePresence>
 					<motion.button
 						type="submit"
-						className="w-full bg-[var(--main-color)] text-white font-semibold py-2 rounded-lg hover:opacity-90 transition relative overflow-hidden"
+						className={`w-full font-semibold py-2 rounded-lg hover:opacity-90 transition relative overflow-hidden ${
+							error
+								? "bg-red-500 text-white"
+								: "bg-[var(--main-color)] text-white"
+						}`}
 						variants={buttonVariants}
 						initial="initial"
-						animate="animate">
+						whileTap={error ? { scale: 0.98 } : {}}
+						// Add shake animation when error
+						animate={
+							error
+								? {
+										x: [
+											0, -10, 10, -10, 10, -4, 4, -2, 2,
+											0,
+										],
+										transition: {
+											duration: 0.5,
+											type: "spring",
+										},
+								  }
+								: { x: 0 }
+						}>
 						{/* Animated shine effect */}
 						<motion.span
 							className="absolute left-0 top-0 w-full h-full pointer-events-none"
@@ -180,7 +207,29 @@ export default function LoginForm({
 							<div className="block w-16 h-full bg-gradient-to-r from-transparent via-white/80 to-transparent blur-md opacity-80" />
 						</motion.span>
 						<span className="relative z-10">
-							Get your boarding pass
+							{isLoading ? (
+								<div className="flex items-center justify-center">
+									<svg
+										className="animate-spin h-5 w-5 text-white mr-2"
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24">
+										<circle
+											className="opacity-25"
+											cx="12"
+											cy="12"
+											r="10"
+											stroke="currentColor"
+											strokeWidth="4"></circle>
+										<path
+											className="opacity-75"
+											fill="currentColor"
+											d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+									</svg>
+								</div>
+							) : (
+								"Get your boarding pass"
+							)}
 						</span>
 					</motion.button>
 				</motion.form>

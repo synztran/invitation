@@ -5,38 +5,31 @@ import LoginForm from "../components/loginForm";
 import InvitationWrapper from "components/Wrapper/index";
 import useCustomerStep from "hooks/useCustomerStep";
 import BoardingPass from "components/BoardingPass";
-
-type InvitationProps = {
-	couple: string;
-	date: string;
-	venue: string;
-};
-
-export const invitorMap = {
-	"111025nga": {
-		name: "Ut Nga",
-	},
-	"111025mai": {
-		name: "Má Mai",
-	},
-	"111025quanghuy": {
-		name: "homie Quang Huy",
-	},
-};
+import ConsultForm from "components/Consult";
 
 export default function Home() {
-	const { currentStep, stepData, nextStep, updateStepData, getStepProgress } =
-		useCustomerStep();
+	const {
+		currentStep,
+		stepData,
+		nextStep,
+		updateStepData,
+		getStepProgress,
+		goToStep,
+	} = useCustomerStep();
 
-	const handleAuthentication = (secret: string) => {
+	console.log(stepData);
+
+	const handleAuthentication = (data: any) => {
 		updateStepData("login", {
 			isAuthenticated: true,
-			invitorInfo: invitorMap[secret as keyof typeof invitorMap],
+			invitorInfo: data,
+			isSubmittedForm: data?.updated_at !== "",
 		});
 		nextStep({
 			login: {
 				isAuthenticated: true,
-				invitorInfo: invitorMap[secret as keyof typeof invitorMap],
+				invitorInfo: data,
+				isSubmittedForm: data?.updated_at !== "",
 			},
 		}); // Move to wrapper step
 	};
@@ -54,6 +47,34 @@ export default function Home() {
 		});
 	};
 
+	const handleProceedToConsult = () => {
+		updateStepData("boardingPass", {
+			timestamp: new Date(),
+		});
+		nextStep({
+			boardingPass: {
+				timestamp: new Date(),
+			},
+		});
+	};
+
+	const handleSubmitConsult = () => {
+		updateStepData("customerReply", {
+			timestamp: new Date(),
+		});
+		goToStep("login");
+		// nextStep({
+		// 	login: {
+		// 		invitorInfo: {
+		// 			name: "",
+		// 			invitation_id: "",
+		// 		},
+		// 		isAuthenticated: false,
+		// 		isSubmittedForm: false,
+		// 	},
+		// });
+	};
+
 	const renderCurrentStep = () => {
 		switch (currentStep) {
 			case "login":
@@ -68,50 +89,22 @@ export default function Home() {
 				return (
 					<BoardingPass
 						customerName={stepData.login?.invitorInfo.name || ""}
+						onTear={handleProceedToConsult}
+						isSubmittedForm={
+							stepData.login?.isSubmittedForm || false
+						}
 					/>
 				);
 
 			case "customer-reply":
 				return (
-					<div className="bg-white rounded-2xl shadow-lg p-8 max-w-md mx-auto">
-						<h2 className="text-2xl font-bold text-[var(--main-color)] mb-6 text-center">
-							Will you join us?
-						</h2>
-						<div className="space-y-4">
-							<motion.button
-								onClick={() =>
-									updateStepData("customerReply", {
-										attending: true,
-										submittedAt: new Date(),
-									})
-								}
-								className="w-full bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-green-600 transition-colors"
-								whileHover={{ scale: 1.02 }}
-								whileTap={{ scale: 0.98 }}>
-								Yes, I'll be there! 🎉
-							</motion.button>
-							<motion.button
-								onClick={() =>
-									updateStepData("customerReply", {
-										attending: false,
-										submittedAt: new Date(),
-									})
-								}
-								className="w-full bg-gray-500 text-white py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors"
-								whileHover={{ scale: 1.02 }}
-								whileTap={{ scale: 0.98 }}>
-								Sorry, can't make it 😢
-							</motion.button>
-						</div>
-						{stepData.customerReply?.attending !== null && (
-							<motion.div
-								initial={{ opacity: 0, y: 10 }}
-								animate={{ opacity: 1, y: 0 }}
-								className="mt-6 text-center text-green-600 font-semibold">
-								Thank you for your response! 💕
-							</motion.div>
-						)}
-					</div>
+					<ConsultForm
+						onSubmit={handleSubmitConsult}
+						invitationId={
+							stepData.login?.invitorInfo.invitation_id || ""
+						}
+						customerName={stepData.login?.invitorInfo.name || ""}
+					/>
 				);
 
 			default:
@@ -144,7 +137,7 @@ export default function Home() {
 					currentStep === "boarding-pass"
 						? "bg-transparent !p-0 rounded-3xl"
 						: "bg-[url('/images/wrapper.webp')]"
-				}`}>
+				} ${currentStep === "customer-reply" ? "my-auto" : ""}`}>
 				{renderCurrentStep()}
 			</main>
 		</>
