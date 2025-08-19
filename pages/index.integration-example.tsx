@@ -21,7 +21,9 @@ export default function Home() {
 				isAuthenticated: true,
 				invitorInfo: {
 					name: "Trần Anh Quân",
+					invitation_id: "1234567890",
 				},
+				isSubmittedForm: false,
 			},
 		}); // Move to wrapper step
 	};
@@ -79,11 +81,11 @@ export default function Home() {
 						<motion.button
 							onClick={() => {
 								updateStepData("boardingPass", {
-									passGenerated: true,
+									timestamp: new Date(),
 								});
 								nextStep({
 									boardingPass: {
-										passGenerated: true,
+										timestamp: new Date(),
 									},
 								});
 							}}
@@ -105,8 +107,7 @@ export default function Home() {
 							<motion.button
 								onClick={() =>
 									updateStepData("customerReply", {
-										attending: true,
-										submittedAt: new Date(),
+										timestamp: new Date(),
 									})
 								}
 								className="w-full bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-green-600 transition-colors"
@@ -117,8 +118,7 @@ export default function Home() {
 							<motion.button
 								onClick={() =>
 									updateStepData("customerReply", {
-										attending: false,
-										submittedAt: new Date(),
+										timestamp: new Date(),
 									})
 								}
 								className="w-full bg-gray-500 text-white py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors"
@@ -127,7 +127,7 @@ export default function Home() {
 								Sorry, can't make it 😢
 							</motion.button>
 						</div>
-						{stepData.customerReply?.attending !== null && (
+						{stepData.customerReply?.timestamp !== undefined && (
 							<motion.div
 								initial={{ opacity: 0, y: 10 }}
 								animate={{ opacity: 1, y: 0 }}
