@@ -97,6 +97,7 @@ const ConsultForm: React.FC<ConsultFormProps> = ({
 	);
 	const [notice, setNotice] = useState<string>(initialData?.notice ?? "");
 	const [phone, setPhone] = useState<string>(initialData?.phone ?? "");
+	const [mail, setMail] = useState<string>("");
 	const [submitted, setSubmitted] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [showSuccess, setShowSuccess] = useState(false);
@@ -117,6 +118,7 @@ const ConsultForm: React.FC<ConsultFormProps> = ({
 				note: notice,
 				phone,
 				invitation_id: invitationId,
+				mail,
 			};
 			const response = await putInvitation(data);
 			if (response.status === "OK") {
@@ -309,7 +311,7 @@ const ConsultForm: React.FC<ConsultFormProps> = ({
 							className="w-full border rounded px-3 py-2"
 							value={notice}
 							onChange={(e) => setNotice(e.target.value)}
-							rows={3}
+							rows={2.5}
 							placeholder="Any message or note for us, food, etc?"
 							initial={{ opacity: 0, y: 10 }}
 							animate={{ opacity: 1, y: 0 }}
@@ -347,6 +349,43 @@ const ConsultForm: React.FC<ConsultFormProps> = ({
 									exit={{ opacity: 0, y: 10 }}
 									transition={{ duration: 0.3 }}>
 									Phone is required.
+								</motion.div>
+							)}
+						</AnimatePresence>
+					</motion.div>
+
+					<motion.div
+						variants={fadeInUp}
+						initial="hidden"
+						animate="visible"
+						custom={5}>
+						<label
+							className="block font-semibold mt-1.5"
+							htmlFor="mail">
+							Mail (we will send invitation to your mail)
+						</label>
+						<motion.input
+							id="mail"
+							type="email"
+							className="w-full border rounded px-3 py-2"
+							value={mail}
+							onChange={(e) => setMail(e.target.value)}
+							placeholder="Enter your email"
+							autoComplete="off"
+							required
+							initial={{ opacity: 0, y: 10 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ delay: 0.15, duration: 0.4 }}
+						/>
+						<AnimatePresence>
+							{submitted && !mail && (
+								<motion.div
+									className="text-red-500 text-sm mt-1"
+									initial={{ opacity: 0, y: 10 }}
+									animate={{ opacity: 1, y: 0 }}
+									exit={{ opacity: 0, y: 10 }}
+									transition={{ duration: 0.3 }}>
+									Mail is required.
 								</motion.div>
 							)}
 						</AnimatePresence>

@@ -86,7 +86,7 @@ export default function LoginForm({
 
 		setLoading(true);
 		try {
-			const response = await getInvitation(secret);
+			const response = await getInvitation(secret.toUpperCase());
 			if (response.status === "OK" && response.data.length > 0) {
 				onAuthenticated(response.data[0]);
 				setError("");
