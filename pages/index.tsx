@@ -1,11 +1,13 @@
 import Head from "next/head";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LoginForm from "../components/loginForm";
 import InvitationWrapper from "components/Wrapper/index";
 import useCustomerStep from "hooks/useCustomerStep";
 import BoardingPass from "components/BoardingPass";
 import ConsultForm from "components/Consult";
+import useViewport from "hooks/useViewport";
+import MobileWarning from "components/MobileWarning";
 
 export default function Home() {
 	const {
@@ -16,6 +18,23 @@ export default function Home() {
 		getStepProgress,
 		goToStep,
 	} = useCustomerStep();
+
+	const { isMobile, isTablet, isDesktop } = useViewport();
+	const [showMobileWarning, setShowMobileWarning] = useState(false);
+	const [userForcedContinue, setUserForcedContinue] = useState(false);
+
+	// Show mobile warning for non-mobile devices (after initial render)
+	useEffect(() => {
+		if (typeof window !== "undefined") {
+			const timer = setTimeout(() => {
+				if (!isMobile && !userForcedContinue) {
+					setShowMobileWarning(true);
+				}
+			}, 1000); // Delay to avoid flash during SSR
+
+			return () => clearTimeout(timer);
+		}
+	}, [isMobile, userForcedContinue]);
 
 	const handleAuthentication = (data: any) => {
 		updateStepData("login", {
@@ -63,6 +82,11 @@ export default function Home() {
 		goToStep("login");
 	};
 
+	const handleContinueAnyway = () => {
+		setUserForcedContinue(true);
+		setShowMobileWarning(false);
+	};
+
 	const renderCurrentStep = () => {
 		switch (currentStep) {
 			case "login":
@@ -102,16 +126,22 @@ export default function Home() {
 	return (
 		<>
 			<Head>
-				<title>Wedding Invitation</title>
+				<title>Hai & Giang Invitation Wedding</title>
 				<meta
 					name="viewport"
 					content="width=device-width, initial-scale=1"
 				/>
-				<meta
-					name="description"
-					content="You're invited to our special day"
-				/>
+				<meta name="description" content="Wedding Invitation" />
 			</Head>
+
+			{/* Mobile Warning Overlay */}
+			{showMobileWarning && (
+				<MobileWarning
+					onContinue={handleContinueAnyway}
+					showContinueButton={true}
+				/>
+			)}
+
 			<div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
 				<motion.div
 					className="h-full bg-[var(--main-color)]"
