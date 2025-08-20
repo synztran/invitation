@@ -17,8 +17,6 @@ export default function Home() {
 		goToStep,
 	} = useCustomerStep();
 
-	console.log(stepData);
-
 	const handleAuthentication = (data: any) => {
 		updateStepData("login", {
 			isAuthenticated: true,
@@ -63,16 +61,6 @@ export default function Home() {
 			timestamp: new Date(),
 		});
 		goToStep("login");
-		// nextStep({
-		// 	login: {
-		// 		invitorInfo: {
-		// 			name: "",
-		// 			invitation_id: "",
-		// 		},
-		// 		isAuthenticated: false,
-		// 		isSubmittedForm: false,
-		// 	},
-		// });
 	};
 
 	const renderCurrentStep = () => {

@@ -62,7 +62,7 @@ const FancyRadio = ({
 				}
 				transition={{ duration: 0.3 }}></motion.span>
 		</span>
-		<span className="ml-2">{label}</span>
+		<span className="ml-2 text-sm">{label}</span>
 	</motion.label>
 );
 
@@ -121,12 +121,6 @@ const ConsultForm: React.FC<ConsultFormProps> = ({
 			const response = await putInvitation(data);
 			if (response.status === "OK") {
 				setShowSuccess(true);
-				// setTimeout(() => {
-				// 	setShowSuccess(false);
-				// 	if (onSubmit) {
-				// 		onSubmit();
-				// 	}
-				// }, 1200);
 			}
 		} catch (error) {
 			console.error(error);
@@ -149,13 +143,13 @@ const ConsultForm: React.FC<ConsultFormProps> = ({
 				<Image
 					src={PATTERN_WEDDING}
 					alt="Pattern"
-					objectFit="fill"
+					objectFit="cover"
 					layout="fill"
 					className="rounded-lg "
 				/>
 			</motion.div>
 			<motion.form
-				className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md space-y-6 relative z-10"
+				className="w-full h-full mx-auto p-3.5 bg-white rounded-lg shadow-md space-y-2 relative z-10"
 				onSubmit={handleSubmit}
 				initial={{ opacity: 0, y: 40, scale: 0.97 }}
 				animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -176,7 +170,7 @@ const ConsultForm: React.FC<ConsultFormProps> = ({
 						href={MAPS_LINK}
 						target="_blank"
 						rel="noopener noreferrer"
-						className="inline-flex items-center gap-2 px-4 py-2 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 transition shadow-lg"
+						className="inline-flex items-center gap-2 px-4 py-1 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 transition shadow-lg"
 						style={{ textDecoration: "none" }}
 						whileHover={{
 							scale: 1.07,
@@ -194,12 +188,12 @@ const ConsultForm: React.FC<ConsultFormProps> = ({
 							<Image
 								src={GOOGLE_MAPS_ICON}
 								alt="Location"
-								width={30}
-								height={30}
+								width={25}
+								height={25}
 							/>
 						</motion.div>
 						<motion.div
-							className="text-xl"
+							className="text-base"
 							style={{ lineHeight: 1 }}
 							initial={{ opacity: 0, x: 20 }}
 							animate={{ opacity: 1, x: 0 }}
@@ -215,147 +209,149 @@ const ConsultForm: React.FC<ConsultFormProps> = ({
 						Click to open Google Maps for the event location
 					</motion.span>
 				</motion.div>
-				<motion.div
-					variants={fadeInUp}
-					initial="hidden"
-					animate="visible"
-					custom={1}>
-					<label className="block font-semibold mb-2">
-						Will you join party with us?
-					</label>
-					<motion.div className="flex gap-4">
-						<FancyRadio
-							name="attending"
-							checked={attending === true}
-							onChange={() => setAttending(true)}
-							label="Yes, I'll be there"
-						/>
-						<FancyRadio
-							name="attending"
-							checked={attending === false}
-							onChange={() => setAttending(false)}
-							label="Sorry, I got busy"
+				<div className="flex flex-col gap-2">
+					<motion.div
+						variants={fadeInUp}
+						initial="hidden"
+						animate="visible"
+						custom={1}>
+						<label className="block font-semibold mb-1">
+							We honestly hope you can join with us.
+						</label>
+						<motion.div className="flex gap-1">
+							<FancyRadio
+								name="attending"
+								checked={attending === true}
+								onChange={() => setAttending(true)}
+								label="Yes, my pleasure"
+							/>
+							<FancyRadio
+								name="attending"
+								checked={attending === false}
+								onChange={() => setAttending(false)}
+								label="No, I'm got busy"
+							/>
+						</motion.div>
+						<AnimatePresence>
+							{submitted && attending === null && (
+								<motion.div
+									className="text-red-500 text-sm mt-1"
+									initial={{ opacity: 0, y: 10 }}
+									animate={{ opacity: 1, y: 0 }}
+									exit={{ opacity: 0, y: 10 }}
+									transition={{ duration: 0.3 }}>
+									Please select an option.
+								</motion.div>
+							)}
+						</AnimatePresence>
+					</motion.div>
+
+					<motion.div
+						variants={fadeInUp}
+						initial="hidden"
+						animate="visible"
+						custom={2}>
+						<label className="block font-semibold mb-1">
+							You need send invitation to your home?
+						</label>
+						<motion.div className="flex gap-1">
+							<FancyRadio
+								name="printInvitation"
+								checked={printInvitation === true}
+								onChange={() => setPrintInvitation(true)}
+								label="Yes, please"
+							/>
+							<FancyRadio
+								name="printInvitation"
+								checked={printInvitation === false}
+								onChange={() => setPrintInvitation(false)}
+								label="Nah, meetup later"
+							/>
+						</motion.div>
+					</motion.div>
+
+					<motion.div
+						variants={fadeInUp}
+						initial="hidden"
+						animate="visible"
+						custom={3}>
+						<label className="block font-semibold mb-1">
+							Will you go with someone?
+						</label>
+						<motion.div className="flex gap-1">
+							<FancyRadio
+								name="withSomeone"
+								checked={withSomeone === true}
+								onChange={() => setWithSomeone(true)}
+								label="Yes"
+							/>
+							<FancyRadio
+								name="withSomeone"
+								checked={withSomeone === false}
+								onChange={() => setWithSomeone(false)}
+								label="Nah"
+							/>
+						</motion.div>
+					</motion.div>
+				</div>
+
+				<div className="flex flex-col">
+					<motion.div
+						variants={fadeInUp}
+						initial="hidden"
+						animate="visible"
+						custom={4}>
+						<label className="block font-semibold" htmlFor="notice">
+							Notice
+						</label>
+						<motion.textarea
+							id="notice"
+							className="w-full border rounded px-3 py-2"
+							value={notice}
+							onChange={(e) => setNotice(e.target.value)}
+							rows={3}
+							placeholder="Any message or note for us, food, etc?"
+							initial={{ opacity: 0, y: 10 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ delay: 0.1, duration: 0.4 }}
 						/>
 					</motion.div>
-					<AnimatePresence>
-						{submitted && attending === null && (
-							<motion.div
-								className="text-red-500 text-sm mt-1"
-								initial={{ opacity: 0, y: 10 }}
-								animate={{ opacity: 1, y: 0 }}
-								exit={{ opacity: 0, y: 10 }}
-								transition={{ duration: 0.3 }}>
-								Please select an option.
-							</motion.div>
-						)}
-					</AnimatePresence>
-				</motion.div>
 
-				<motion.div
-					variants={fadeInUp}
-					initial="hidden"
-					animate="visible"
-					custom={2}>
-					<label className="block font-semibold mb-2">
-						Will you help us on go to the bride's house (Bê tráp)?
-					</label>
-					<motion.div className="flex gap-4">
-						<FancyRadio
-							name="printInvitation"
-							checked={printInvitation === true}
-							onChange={() => setPrintInvitation(true)}
-							label="Yes of course"
+					<motion.div
+						variants={fadeInUp}
+						initial="hidden"
+						animate="visible"
+						custom={5}>
+						<label className="block font-semibold" htmlFor="phone">
+							Phone
+						</label>
+						<motion.input
+							id="phone"
+							type="tel"
+							className="w-full border rounded px-3 py-2"
+							value={phone}
+							onChange={(e) => setPhone(e.target.value)}
+							placeholder="Enter your phone number"
+							autoComplete="off"
+							required
+							initial={{ opacity: 0, y: 10 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ delay: 0.15, duration: 0.4 }}
 						/>
-						<FancyRadio
-							name="printInvitation"
-							checked={printInvitation === false}
-							onChange={() => setPrintInvitation(false)}
-							label="Nah, I don't need it"
-						/>
+						<AnimatePresence>
+							{submitted && !phone && (
+								<motion.div
+									className="text-red-500 text-sm mt-1"
+									initial={{ opacity: 0, y: 10 }}
+									animate={{ opacity: 1, y: 0 }}
+									exit={{ opacity: 0, y: 10 }}
+									transition={{ duration: 0.3 }}>
+									Phone is required.
+								</motion.div>
+							)}
+						</AnimatePresence>
 					</motion.div>
-				</motion.div>
-
-				<motion.div
-					variants={fadeInUp}
-					initial="hidden"
-					animate="visible"
-					custom={3}>
-					<label className="block font-semibold mb-2">
-						Will you go with someone?
-					</label>
-					<motion.div className="flex gap-4">
-						<FancyRadio
-							name="withSomeone"
-							checked={withSomeone === true}
-							onChange={() => setWithSomeone(true)}
-							label="Yes"
-						/>
-						<FancyRadio
-							name="withSomeone"
-							checked={withSomeone === false}
-							onChange={() => setWithSomeone(false)}
-							label="Nah"
-						/>
-					</motion.div>
-				</motion.div>
-
-				<motion.div
-					variants={fadeInUp}
-					initial="hidden"
-					animate="visible"
-					custom={4}>
-					<label
-						className="block font-semibold mb-2"
-						htmlFor="notice">
-						Your notice
-					</label>
-					<motion.textarea
-						id="notice"
-						className="w-full border rounded px-3 py-2"
-						value={notice}
-						onChange={(e) => setNotice(e.target.value)}
-						rows={3}
-						placeholder="Any message or note for us, food, etc?"
-						initial={{ opacity: 0, y: 10 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ delay: 0.1, duration: 0.4 }}
-					/>
-				</motion.div>
-
-				<motion.div
-					variants={fadeInUp}
-					initial="hidden"
-					animate="visible"
-					custom={5}>
-					<label className="block font-semibold mb-2" htmlFor="phone">
-						Your phone
-					</label>
-					<motion.input
-						id="phone"
-						type="tel"
-						className="w-full border rounded px-3 py-2"
-						value={phone}
-						onChange={(e) => setPhone(e.target.value)}
-						placeholder="Enter your phone number"
-						autoComplete="off"
-						required
-						initial={{ opacity: 0, y: 10 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ delay: 0.15, duration: 0.4 }}
-					/>
-					<AnimatePresence>
-						{submitted && !phone && (
-							<motion.div
-								className="text-red-500 text-sm mt-1"
-								initial={{ opacity: 0, y: 10 }}
-								animate={{ opacity: 1, y: 0 }}
-								exit={{ opacity: 0, y: 10 }}
-								transition={{ duration: 0.3 }}>
-								Phone is required.
-							</motion.div>
-						)}
-					</AnimatePresence>
-				</motion.div>
+				</div>
 
 				<motion.button
 					type="submit"
@@ -406,9 +402,9 @@ const ConsultForm: React.FC<ConsultFormProps> = ({
 				open={showSuccess}
 				onBackToLogin={() => {
 					onSubmit?.();
-					// window.location.reload();
 				}}
 				customerName={customerName}
+				isJoinParty={attending === true}
 			/>
 		</motion.div>
 	);

@@ -1,11 +1,12 @@
 import {
 	BARCODE_IMAGE,
+	FINGERPRINT_ICON,
 	LOCATION_IMAGE,
 	SIMPLE_AIRPLAN,
 } from "components/images";
 import { motion } from "framer-motion";
-import useCustomerStep from "hooks/useCustomerStep";
-import Image from "next/image";
+import NextImage from "next/image";
+import { useRef } from "react";
 
 const TITLE = "Hai & Giang";
 
@@ -16,12 +17,14 @@ interface IProps {
 }
 
 const BoardingPass = ({
-	customerName = "Trần Anh Quân",
+	customerName = "",
 	onTear,
 	isSubmittedForm,
 }: IProps) => {
+	const ref = useRef<HTMLDivElement>(null);
 	return (
 		<motion.div
+			ref={ref}
 			className={`h-full w-full flex bg-[url("/images/boarding_bg.webp")] overflow-auto`}
 			initial={{ opacity: 0, scale: 0.97, y: 40 }}
 			animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -35,8 +38,8 @@ const BoardingPass = ({
 			<div className={`w-full relativ pt-2 grid grid-rows-12 h-full`}>
 				<div className="relative pl-10 pr-12 pb-4 row-span-1">
 					<motion.span
-						className="text-left text-black text-6xl font-bold signature-font"
-						style={{ lineHeight: 1 }}
+						className="relative text-left text-black text-6xl signature-font overflow-visible"
+						style={{ lineHeight: 1, display: "inline-block" }}
 						initial={{ opacity: 0, y: -30, scale: 0.95 }}
 						animate={{ opacity: 1, y: 0, scale: 1 }}
 						transition={{
@@ -45,7 +48,7 @@ const BoardingPass = ({
 							type: "spring",
 							bounce: 0.3,
 						}}>
-						{TITLE}
+						<span className="relative z-10">{TITLE}</span>
 					</motion.span>
 					<motion.div
 						className={`absolute top-14 -right-[2.4rem] bg-[url('/images/new_1_class_bg.webp')] bg-cover bg-no-repeat bg-center flex items-center justify-center font-bold text-base text-black w-[12.75rem] min-h-max rotate-90 z-[12] p-1`}
@@ -56,8 +59,38 @@ const BoardingPass = ({
 							duration: 0.7,
 							type: "spring",
 							bounce: 0.2,
-						}}>
-						Business Class
+						}}
+						style={{ position: "absolute" }}>
+						<span className="relative inline-block">
+							<span className="relative z-10">
+								Business Class
+							</span>
+						</span>
+						<span
+							aria-hidden="true"
+							className="pointer-events-none absolute inset-0 z-20"
+							style={{
+								WebkitMaskImage:
+									"linear-gradient(120deg, transparent 40%, white 50%, transparent 60%)",
+								maskImage:
+									"linear-gradient(120deg, transparent 40%, white 50%, transparent 60%)",
+								background:
+									"linear-gradient(120deg, rgba(255,255,255,0.0) 40%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.0) 60%)",
+								animation:
+									"shine-effect-business 2.2s linear infinite",
+								display: "block",
+							}}
+						/>
+						<style jsx>{`
+							@keyframes shine-effect-business {
+								0% {
+									transform: translateX(-100%);
+								}
+								100% {
+									transform: translateX(50%);
+								}
+							}
+						`}</style>
 					</motion.div>
 					<motion.div
 						className="absolute left-0 bottom-0 w-full border-b-4 border-dashed border-black z-[11]"
@@ -86,9 +119,16 @@ const BoardingPass = ({
 						}}>
 						The Families of Hai Tran and Giang Vo
 						<br />
-						<span>cordially invite:</span>...........
-						<strong className="text-black">{customerName}</strong>
-						................ <br />
+						<span>cordially invite:</span>
+						<div className="relative">
+							<span>..................................</span>
+							<strong className=" absolute text-black text-4xl signature-font leading-3">
+								{customerName}
+							</strong>
+							<span>
+								......................................................
+							</span>
+						</div>
 						to join us in celebrating the joyous occasion of our
 						wedding at our Private Residence
 						<br />
@@ -116,7 +156,7 @@ const BoardingPass = ({
 							duration: 0.7,
 							ease: "easeOut",
 						}}>
-						<Image
+						<NextImage
 							src={BARCODE_IMAGE}
 							width={220}
 							height={40}
@@ -142,7 +182,7 @@ const BoardingPass = ({
 					</motion.div>
 				</div>
 				<motion.div
-					className="row-span-4 relative overflow-hidden flex flex-row-reverse gap-4"
+					className="row-span-4 relative overflow-hidden flex flex-row-reverse gap-2"
 					initial={{ opacity: 0, y: 40 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ delay: 1.1, duration: 0.7, ease: "easeOut" }}>
@@ -176,7 +216,7 @@ const BoardingPass = ({
 									type: "spring",
 									bounce: 0.2,
 								}}>
-								<Image
+								<NextImage
 									src={LOCATION_IMAGE}
 									width={30}
 									height={30}
@@ -191,7 +231,7 @@ const BoardingPass = ({
 									duration: 0.6,
 									ease: "easeOut",
 								}}>
-								<Image
+								<NextImage
 									src={SIMPLE_AIRPLAN}
 									width={30}
 									height={30}
@@ -234,7 +274,7 @@ const BoardingPass = ({
 						</motion.div>
 					</motion.div>
 					<motion.div
-						className="relative py-2 break-words text-center text-xs"
+						className="relative py-4 break-words text-center text-xs"
 						style={{ writingMode: "vertical-rl" }}
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
@@ -368,73 +408,53 @@ const BoardingPass = ({
 								damping: 20,
 							}}
 							aria-label="Scan your finger to continue">
-							<span className="text-xs font-semibold tracking-widest text-gray-700">
-								Click here
-							</span>
+							<motion.span
+								className="text-[8px] font-semibold tracking-widest text-gray-700"
+								animate={{
+									x: [0, -2, 2, -2, 2, 0],
+									rotate: [0, -2, 2, -2, 2, 0],
+								}}>
+								Check point
+							</motion.span>
 							<span
-								className="fingerprint flex items-center justify-center absolute top-1/2 -translate-y-1/2"
+								className="fingerprint flex items-center justify-center absolute top-1/2 -translate-y-[100%]"
 								aria-hidden="true"
 								style={{
-									width: 36,
-									height: 36,
+									width: 32,
+									height: 32,
 									borderRadius: "50%",
-									background:
-										"radial-gradient(circle at 60% 40%, #e0f7fa 60%, #fff 100%)",
-									boxShadow: "0 0 0px #00bcd4",
-									transition: "box-shadow 0.3s",
-									overflow: "hidden",
+									background: "#fff",
+									position: "relative",
 								}}>
-								<span
+								<motion.span
 									className="flex flex-col items-center justify-center w-full h-full"
-									aria-hidden="true">
-									<span
-										className="block bg-black rounded-full"
+									aria-hidden="true"
+									style={{ position: "relative", zIndex: 1 }}
+									animate={{
+										scale: [1, 1.15, 0.95, 1.1, 1],
+										rotate: [0, -6, 6, -4, 4, 0],
+									}}
+									transition={{
+										repeat: Infinity,
+										repeatType: "loop",
+										duration: 1.4,
+										times: [0, 0.18, 0.36, 0.54, 0.72, 1],
+										ease: "easeInOut",
+										delay: 0.12, // debounce before each loop
+										debounce: 0.5,
+									}}>
+									<NextImage
+										src={FINGERPRINT_ICON}
+										alt="fingerprint"
+										width={32}
+										height={32}
 										style={{
-											width: 10,
-											height: 10,
-											marginBottom: 6,
+											display: "block",
+											margin: "0 auto",
 										}}
 									/>
-									<span
-										className="block bg-black rounded-full"
-										style={{
-											width: 10,
-											height: 10,
-										}}
-									/>
-								</span>
+								</motion.span>
 							</span>
-							<style jsx>{`
-								.fingerprint {
-									transition: box-shadow 0.3s;
-								}
-								.fingerprint.scanning {
-									box-shadow: 0 0 16px 4px #00bcd4;
-								}
-								.scan-bar {
-									transition: opacity 0.2s;
-								}
-								.scan-bar.scanning {
-									animation: scanbar-move 0.7s
-										cubic-bezier(0.7, -0.2, 0.7, 1.5)
-										forwards;
-								}
-								@keyframes scanbar-move {
-									0% {
-										transform: translateX(-50%)
-											translateY(0%);
-										opacity: 1;
-									}
-									80% {
-										opacity: 0.7;
-									}
-									100% {
-										transform: translateX(-50%)
-											translateY(100%);
-										opacity: 0;
-									}
-								}
-							`}</style>
 						</motion.button>
 					) : null}
 				</motion.div>

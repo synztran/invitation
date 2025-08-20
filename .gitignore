@@ -53,3 +53,6 @@ export/
 # Yarn cache and PnP files
 .yarn/
 .pnp.*
+
+# other
+.yarnrc.yml

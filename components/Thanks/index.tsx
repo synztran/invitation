@@ -1,14 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface ThanksModalProps {
 	open: boolean;
 	onBackToLogin: () => void;
 	customerName: string;
+	isJoinParty: boolean;
 }
 
 const THANKS_TEXT =
 	"We are thrilled you accepted our wedding invitation\u0021 Your presence will make our special day even more joyful\u002e Thank you for your warm support\u2014we can\u0027t wait to share this moment with you\u0021";
+
+const NOT_JOIN_TEXT =
+	"We're sorry you won't be able to join us for our wedding celebration. Thank you for letting us know, and we truly appreciate your kind wishes and support. We hope to see you another time and wish you all the best!";
 
 // Sparkle animation for background
 const Sparkle = ({
@@ -207,7 +211,14 @@ const ThanksModal = ({
 	open,
 	onBackToLogin,
 	customerName,
+	isJoinParty = true,
 }: ThanksModalProps) => {
+	const text = useMemo(() => {
+		if (isJoinParty) {
+			return THANKS_TEXT;
+		}
+		return NOT_JOIN_TEXT;
+	}, [isJoinParty]);
 	return (
 		<AnimatePresence>
 			{open && (
@@ -224,7 +235,7 @@ const ThanksModal = ({
 					{/* Confetti */}
 					<Confetti />
 					<motion.div
-						className="bg-white rounded-xl shadow-xl p-4 max-w-sm w-full flex flex-col items-start relative overflow-hidden"
+						className="bg-white rounded-xl shadow-xl p-4 w-full flex flex-col items-start relative overflow-hidden max-w-[90%]"
 						variants={modalVariants}
 						initial="hidden"
 						animate="visible"
@@ -243,7 +254,7 @@ const ThanksModal = ({
 								damping: 18,
 								delay: 0.2,
 							}}>
-							🎉
+							{isJoinParty ? "🎉" : "🤗"}
 						</motion.div>
 						<motion.div
 							className="text-left w-full"
@@ -262,7 +273,7 @@ const ThanksModal = ({
 								initial={{ opacity: 0, y: 10 }}
 								animate={{ opacity: 1, y: 0 }}
 								transition={{ delay: 0.9, duration: 0.5 }}>
-								<TypingText text={open ? THANKS_TEXT : ""} />
+								<TypingText text={open ? text : ""} />
 							</motion.div>
 							<motion.strong
 								className="signature-font text-5xl block"

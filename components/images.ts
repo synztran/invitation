@@ -12,3 +12,5 @@ export const SIMPLE_AIRPLAN = "/images/simple_airplan.png";
 export const LOCATION_IMAGE = "/images/location.png";
 export const GOOGLE_MAPS_ICON = "/images/gg_map.png";
 export const PATTERN_WEDDING = "/images/pattern_wedding.jpg";
+export const PRINT_ICON = "/images/print.png";
+export const FINGERPRINT_ICON = "/images/finger.png";
