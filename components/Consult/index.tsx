@@ -13,6 +13,7 @@ interface ConsultFormProps {
 		withSomeone?: boolean | null;
 		notice?: string;
 		phone?: string;
+		is_carpool?: boolean | null;
 	};
 	invitationId: string;
 	customerName: string;
@@ -26,11 +27,13 @@ const FancyRadio = ({
 	checked,
 	onChange,
 	label,
+	required,
 }: {
 	name: string;
 	checked: boolean;
 	onChange: () => void;
 	label: string;
+	required?: boolean;
 }) => (
 	<motion.label
 		className="flex items-center cursor-pointer select-none gap-2 w-1/2"
@@ -62,7 +65,10 @@ const FancyRadio = ({
 				}
 				transition={{ duration: 0.3 }}></motion.span>
 		</span>
-		<span className="ml-2 text-sm">{label}</span>
+		<span className="text-sm">
+			{label}
+			{required && <span className="text-red-500">*</span>}
+		</span>
 	</motion.label>
 );
 
@@ -90,10 +96,13 @@ const ConsultForm: React.FC<ConsultFormProps> = ({
 		initialData?.attending ?? true
 	);
 	const [printInvitation, setPrintInvitation] = useState<boolean | null>(
-		initialData?.printInvitation ?? true
+		initialData?.printInvitation ?? false
 	);
 	const [withSomeone, setWithSomeone] = useState<boolean | null>(
-		initialData?.withSomeone ?? true
+		initialData?.withSomeone ?? false
+	);
+	const [isCarpool, setCartPool] = useState<boolean | null>(
+		initialData?.is_carpool ?? false
 	);
 	const [notice, setNotice] = useState<string>(initialData?.notice ?? "");
 	const [phone, setPhone] = useState<string>(initialData?.phone ?? "");
@@ -119,6 +128,7 @@ const ConsultForm: React.FC<ConsultFormProps> = ({
 				phone,
 				invitation_id: invitationId,
 				mail,
+				is_carpool: isCarpool,
 			};
 			const response = await putInvitation(data);
 			if (response.status === "OK") {
@@ -162,7 +172,7 @@ const ConsultForm: React.FC<ConsultFormProps> = ({
 					stiffness: 200,
 				}}>
 				{/* Google Maps Direction Link */}
-				<motion.div
+				{/* <motion.div
 					className="flex flex-col items-center"
 					variants={fadeInUp}
 					initial="hidden"
@@ -210,7 +220,7 @@ const ConsultForm: React.FC<ConsultFormProps> = ({
 						transition={{ delay: 0.5, duration: 0.5 }}>
 						Click to open Google Maps for the event location
 					</motion.span>
-				</motion.div>
+				</motion.div> */}
 				<div className="flex flex-col gap-2">
 					<motion.div
 						variants={fadeInUp}
@@ -220,7 +230,7 @@ const ConsultForm: React.FC<ConsultFormProps> = ({
 						<label className="block font-semibold mb-1">
 							We honestly hope you can join with us.
 						</label>
-						<motion.div className="flex gap-1">
+						<motion.div className="flex gap-0">
 							<FancyRadio
 								name="attending"
 								checked={attending === true}
@@ -254,7 +264,7 @@ const ConsultForm: React.FC<ConsultFormProps> = ({
 						animate="visible"
 						custom={2}>
 						<label className="block font-semibold mb-1">
-							You need send invitation to your home?
+							Send invitation to your home?
 						</label>
 						<motion.div className="flex gap-1">
 							<FancyRadio
@@ -292,6 +302,30 @@ const ConsultForm: React.FC<ConsultFormProps> = ({
 								checked={withSomeone === false}
 								onChange={() => setWithSomeone(false)}
 								label="Nah"
+							/>
+						</motion.div>
+					</motion.div>
+
+					<motion.div
+						variants={fadeInUp}
+						initial="hidden"
+						animate="visible"
+						custom={3}>
+						<label className="block font-semibold mb-1">
+							Will you need carpool?
+						</label>
+						<motion.div className="flex gap-1">
+							<FancyRadio
+								name="isCarpool"
+								checked={isCarpool === true}
+								onChange={() => setCartPool(true)}
+								label="Yes, I need"
+							/>
+							<FancyRadio
+								name="isCarpool"
+								checked={isCarpool === false}
+								onChange={() => setCartPool(false)}
+								label="Nah, self-sufficient"
 							/>
 						</motion.div>
 					</motion.div>
@@ -362,7 +396,7 @@ const ConsultForm: React.FC<ConsultFormProps> = ({
 						<label
 							className="block font-semibold mt-1.5"
 							htmlFor="mail">
-							Mail (we will send invitation to your mail)
+							Mail (we'll send invitation to your mail)
 						</label>
 						<motion.input
 							id="mail"
@@ -391,36 +425,88 @@ const ConsultForm: React.FC<ConsultFormProps> = ({
 						</AnimatePresence>
 					</motion.div>
 				</div>
-
-				<motion.button
-					type="submit"
-					className="w-full bg-[var(--main-color)] text-white py-2 rounded hover:bg-opacity-90 transition font-bold shadow-lg relative overflow-hidden"
-					whileHover={{
-						scale: 1.03,
-						boxShadow: "0 4px 24px #eab30855",
-						backgroundColor: "var(--main-color)",
-					}}
-					whileTap={{ scale: 0.97 }}
-					disabled={isSubmitting}
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ delay: 0.2, duration: 0.5 }}>
-					{isSubmitting ? (
-						<motion.span
-							className="flex items-center justify-center gap-2"
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							exit={{ opacity: 0 }}>
+				<div className="flex item-center gap-2">
+					<motion.div
+						className="flex flex-col items-center"
+						variants={fadeInUp}
+						initial="hidden"
+						animate="visible"
+						custom={0}>
+						<motion.a
+							href={MAPS_LINK}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="inline-flex items-center gap-2 px-4 py-1 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 transition shadow-lg h-full"
+							style={{ textDecoration: "none" }}
+							whileHover={{
+								scale: 1.07,
+								boxShadow: "0 4px 24px #3b82f6aa",
+							}}
+							whileTap={{ scale: 0.97 }}>
+							<motion.div
+								initial={{ rotate: -10, scale: 0.8 }}
+								animate={{ rotate: 0, scale: 1 }}
+								transition={{
+									type: "spring",
+									stiffness: 300,
+									damping: 20,
+								}}
+								className="min-w-6 min-h-6">
+								<Image
+									src={GOOGLE_MAPS_ICON}
+									alt="Location"
+									width={30}
+									height={30}
+								/>
+							</motion.div>
+							<motion.div
+								className="text-xs"
+								style={{ lineHeight: 1 }}
+								initial={{ opacity: 0, x: 20 }}
+								animate={{ opacity: 1, x: 0 }}
+								transition={{ delay: 0.2, duration: 0.5 }}>
+								Get Directions
+							</motion.div>
+						</motion.a>
+						{/* <motion.span
+							className="text-xs text-gray-500 mt-1 text-center"
+							initial={{ opacity: 0, y: 10 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ delay: 0.5, duration: 0.5 }}>
+							Click to open Google Maps for the event location
+						</motion.span> */}
+					</motion.div>
+					<motion.button
+						type="submit"
+						className="w-full bg-[var(--main-color)] text-white py-2 rounded hover:bg-opacity-90 transition font-bold shadow-lg relative overflow-hidden"
+						whileHover={{
+							scale: 1.03,
+							boxShadow: "0 4px 24px #eab30855",
+							backgroundColor: "var(--main-color)",
+						}}
+						whileTap={{ scale: 0.97 }}
+						disabled={isSubmitting}
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ delay: 0.2, duration: 0.5 }}>
+						{isSubmitting ? (
 							<motion.span
-								className="inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
-								style={{ borderTopColor: "transparent" }}
-							/>
-							Submitting...
-						</motion.span>
-					) : (
-						"Submit"
-					)}
-				</motion.button>
+								className="flex items-center justify-center gap-2"
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								exit={{ opacity: 0 }}>
+								<motion.span
+									className="inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
+									style={{ borderTopColor: "transparent" }}
+								/>
+								Submitting...
+							</motion.span>
+						) : (
+							"Submit"
+						)}
+					</motion.button>
+				</div>
+
 				<style jsx>{`
 					/* Extra style for fancy radio if needed */
 					input[type="radio"].peer:checked + span {

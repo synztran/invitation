@@ -9,6 +9,15 @@ import ConsultForm from "components/Consult";
 import useViewport from "hooks/useViewport";
 import MobileWarning from "components/MobileWarning";
 
+const initialData = {
+	attending: null,
+	printInvitation: null,
+	withSomeone: null,
+	notice: "",
+	phone: "",
+	is_carpool: null,
+};
+
 export default function Home() {
 	const {
 		currentStep,
@@ -116,6 +125,7 @@ export default function Home() {
 							stepData.login?.invitorInfo.invitation_id || ""
 						}
 						customerName={stepData.login?.invitorInfo.name || ""}
+						initialData={initialData}
 					/>
 				);
 

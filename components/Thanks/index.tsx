@@ -9,10 +9,13 @@ interface ThanksModalProps {
 }
 
 const THANKS_TEXT =
-	"We are thrilled you accepted our wedding invitation\u0021 Your presence will make our special day even more joyful\u002e Thank you for your warm support\u2014we can\u0027t wait to share this moment with you\u0021";
+	"We are thrilled you accepted our wedding invitation\u0021 Your presence will make our special day even more joyful\u002e Thank you for your warm support\u2014we can\u0027t wait to share this moment with you\u0021 We also have sent an invitation to your email. Please check your inbox and spam folder. If you still don't see it, please contact us. One more time, We really appreciate your presence and support. We can't wait to see you there!";
 
 const NOT_JOIN_TEXT =
 	"We're sorry you won't be able to join us for our wedding celebration. Thank you for letting us know, and we truly appreciate your kind wishes and support. We hope to see you another time and wish you all the best!";
+
+const REMIND_CHECK_MAIL =
+	"We've sent you an invitation to your email. Please check your inbox and spam folder. If you don't see it, please check your spam folder. If you still don't see it, please contact us";
 
 // Sparkle animation for background
 const Sparkle = ({
@@ -69,7 +72,7 @@ const Sparkle = ({
 	</motion.span>
 );
 
-function TypingText({ text, speed = 30 }: { text: string; speed?: number }) {
+function TypingText({ text, speed = 25 }: { text: string; speed?: number }) {
 	const [displayed, setDisplayed] = useState("");
 
 	useEffect(() => {

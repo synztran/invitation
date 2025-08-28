@@ -100,6 +100,15 @@ export default function LoginForm({
 		}
 	};
 
+	const handleOnChange = (e: any) => {
+		const value = e.target.value.toUpperCase();
+		setSecret(value);
+		// If the user types "INV" or "inv", auto-fill with "INVITATION"
+		if (value === "INV" || value === "inv") {
+			setSecret(value + "-");
+		}
+	};
+
 	return (
 		<AnimatePresence>
 			<motion.div
@@ -147,7 +156,7 @@ export default function LoginForm({
 							placeholder="Fill your invitation key"
 							className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--main-color)]"
 							value={secret}
-							onChange={(e: any) => setSecret(e.target.value)}
+							onChange={handleOnChange}
 							autoComplete="off"
 							autoCorrect="off"
 							initial={{ opacity: 0, x: 40 }}
